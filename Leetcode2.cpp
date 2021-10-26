@@ -11,34 +11,36 @@
 class Solution {
 public:
     ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-        ListNode* head = new ListNode(); // new ListNode works as well
-        ListNode* dummy = head;
-        ListNode* pNode1 = l1;
-        ListNode* pNode2 = l2;
-        int i1, i2, value;
-        int takeover = 0;
-        while( pNode1 != nullptr || pNode2 != nullptr )
-        {
-            dummy -> next = new ListNode(); //segmentation fault without this line!!
-            dummy = dummy -> next;
-            i1 = ( pNode1 != nullptr )? pNode1 -> val : 0;
-            i2 = ( pNode2 != nullptr )? pNode2 -> val : 0;
-            value = i1 + i2 + takeover;
-            takeover = value / 10;
-            (dummy -> val) = value % 10;
-            if ( pNode1 != nullptr)
-                pNode1 = pNode1 -> next;
-            if ( pNode2 != nullptr )
-                pNode2 = pNode2 -> next;
-        }
+        ListNode* copy1 = l1;
+        ListNode* copy2 = l2;
+        ListNode* ans = new ListNode; // new ListNode() works as well
+        ListNode* result = ans;
+        int carry = 0;
         
-        if ( takeover > 0 )
+        while( copy1 != nullptr || copy2 != nullptr )
         {
-            dummy -> next = new ListNode;
-            dummy = dummy -> next;
-            dummy -> val =  takeover;
+            if( copy1 != nullptr )
+            {
+                carry += copy1 -> val;
+                copy1 = copy1 -> next;
+            }
+            if( copy2 != nullptr )
+            {
+                carry += copy2 -> val;
+                copy2 = copy2 -> next;
+            }
+            
+            result -> next  = new ListNode( carry % 10 );
+            result = result -> next;
+            carry = carry / 10;
+            
         }
-        
-        return head -> next;
+        if ( carry > 0 )
+        {
+            result -> next = new ListNode( carry );
+            result = result -> next;
+        }
+        return ans -> next;
+ 
     }
 };
